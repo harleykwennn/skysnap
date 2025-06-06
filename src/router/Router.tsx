@@ -1,8 +1,8 @@
 import { lazy, Suspense } from 'react'
-import ROUTE_PATH from './path'
+import ROUTE_PATH from '@/router/path'
 import { Route, Routes } from 'react-router-dom'
 
-const Home = lazy(() => import('../pages/Home/Home'))
+const Home = lazy(() => import('@/pages/Home/Home'))
 
 export default function Router() {
   return (
