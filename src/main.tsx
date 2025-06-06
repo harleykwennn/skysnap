@@ -4,11 +4,14 @@ import '@/assets/fonts/fonts.css'
 import '@/index.css'
 import App from '@/App.tsx'
 import RouteProvider from '@/router/Provider.tsx'
+import { ChakraProvider } from '@chakra-ui/react'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouteProvider>
-      <App />
-    </RouteProvider>
+    <ChakraProvider>
+      <RouteProvider>
+        <App />
+      </RouteProvider>
+    </ChakraProvider>
   </StrictMode>
 )
