@@ -4,3 +4,16 @@
   box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
 }
+
+.material-symbols-rounded,
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    /* 0 = outline, 1 = filled */
+    'wght' 400,
+    /* weight (100-700) */
+    'GRAD' 0,
+    /* grade */
+    'opsz' 48;
+  /* optical size */
+}

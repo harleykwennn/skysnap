@@ -105,7 +105,7 @@ export function AdvancedQueryClientProvider({
   }, [])
 
   return (
-    <QueryClientProvider client={queryClient} contextSharing={true}>
+    <QueryClientProvider client={queryClient}>
       <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
