@@ -1,5 +1,5 @@
 import axiosInstance from "@/services/axios-instance";
-import type { ForwardGeocodingParamsProps, ForwardGeocodingProps } from "./locationiq.service-d";
+import type { ForwardGeocodingParamsProps, ForwardGeocodingProps } from "@/services/locationiq/locationiq.service-d";
 
 const BASE_URL = import.meta.env.VITE_LOCATIONIQ_BASE_URL
 const API_KEY = import.meta.env.VITE_LOCATIONIQ_API_KEY
