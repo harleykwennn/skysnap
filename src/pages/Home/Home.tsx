@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import locationiqService from '@/services/locationiq/locationiq.service'
+import type { ForwardGeocodingResultProps } from '@/services/locationiq/locationiq.service-d'
 import { useDebouncedCallback } from 'use-debounce'
 import { useQuery } from '@tanstack/react-query'
-import type { ForwardGeocodingResultProps } from '@/services/locationiq/locationiq.service-d'
+import { MapPinIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 import {
   Container,
   Flex,
@@ -14,9 +15,8 @@ import {
   MenuDivider,
   Button,
   InputGroup,
-  Text,
-  Center,
   InputLeftElement,
+  Icon,
 } from '@chakra-ui/react'
 
 export default function Home() {
@@ -45,20 +45,7 @@ export default function Home() {
             width="100%"
             textAlign="left"
             fontWeight="normal"
-            leftIcon={
-              <Center>
-                <Text as="span" className="material-symbols-outlined">
-                  location_on
-                </Text>
-              </Center>
-            }
-            rightIcon={
-              <Center>
-                <Text as="span" className="material-symbols-outlined">
-                  close
-                </Text>
-              </Center>
-            }
+            leftIcon={<Icon as={MapPinIcon} fontSize="24px" />}
           >
             {selectedLocation?.display_name ?? 'Select Location'}
           </MenuButton>
@@ -66,9 +53,7 @@ export default function Home() {
             <Flex padding="6px 12px">
               <InputGroup>
                 <InputLeftElement>
-                  <Text as="span" className="material-symbols-outlined">
-                    search
-                  </Text>
+                  <Icon as={MagnifyingGlassIcon} fontSize="24px" />
                 </InputLeftElement>
                 <Input
                   type="search"
