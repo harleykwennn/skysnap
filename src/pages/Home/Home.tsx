@@ -2,6 +2,7 @@ import { useState } from 'react'
 import locationiqService from '@/services/locationiq/locationiq.service'
 import openweatherService from '@/services/openweather/openweather.service'
 import CurrentWeather from '@/pages/Home/components/CurrentWeather'
+import Forecast from './components/Forecast'
 import type { ForwardGeocodingResultProps } from '@/services/locationiq/locationiq.service-d'
 import { useDebouncedCallback } from 'use-debounce'
 import { useQuery } from '@tanstack/react-query'
@@ -21,11 +22,7 @@ import {
   Container,
   useDisclosure,
   Spinner,
-  Image,
-  GridItem,
-  Grid,
 } from '@chakra-ui/react'
-import { format } from 'date-fns'
 
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -74,8 +71,6 @@ export default function Home() {
   return (
     <Container maxWidth="container.sm" paddingY="1rem">
       <Flex direction="column" gap="20px">
-        <Text>Skysnap</Text>
-
         {/* Location */}
         <Popover
           isOpen={isOpen}
@@ -92,13 +87,20 @@ export default function Home() {
               </InputLeftElement>
               <Input
                 readOnly
+                variant="filled"
+                rounded="full"
                 value={selectedLocation?.display_name ?? 'Select location'}
                 fontSize="sm"
               />
             </InputGroup>
           </PopoverTrigger>
 
-          <PopoverContent width="100%">
+          <PopoverContent
+            width="100%"
+            backgroundColor="background"
+            border="none"
+            boxShadow="0 0 6px 3px rgba(0, 0, 0, 0.1)"
+          >
             <PopoverBody
               padding=".5rem"
               as={Flex}
@@ -127,7 +129,7 @@ export default function Home() {
                       key={dataIndex}
                       p={2}
                       borderRadius="md"
-                      _hover={{ bg: 'gray.100', cursor: 'pointer' }}
+                      _hover={{ backgroundColor: 'gray', cursor: 'pointer' }}
                       onClick={() => handleLocationSelect(data)}
                     >
                       <Text fontSize="sm">{data.display_name}</Text>
@@ -139,73 +141,18 @@ export default function Home() {
           </PopoverContent>
         </Popover>
 
-        {/* Current Weather */}
-        {currentWeatherQuery?.isFetching ? (
+        {currentWeatherQuery?.isFetching || forecastQuery?.isFetching ? (
           <Spinner margin="auto" />
-        ) : currentWeatherQuery?.data ? (
+        ) : null}
+
+        {/* Current Weather */}
+        {currentWeatherQuery?.data ? (
           <CurrentWeather data={currentWeatherQuery?.data} />
         ) : null}
 
         {/* Forecast */}
-        {forecastQuery?.isFetching ? (
-          <Spinner margin="auto" />
-        ) : forecastQuery?.data ? (
-          <Flex position="relative" borderRadius="24px" overflow="hidden">
-            <Flex
-              width="100%"
-              height="100%"
-              backgroundColor="gray"
-              opacity={0.16}
-              position="absolute"
-            />
-            <Grid
-              gridTemplateColumns="repeat(3, 1fr)"
-              gridGap="1rem"
-              margin="1rem"
-              width="100%"
-            >
-              {forecastQuery?.data?.list?.map((data, index) => {
-                return (
-                  <GridItem key={index}>
-                    <Flex
-                      position="relative"
-                      borderRadius="12px"
-                      overflow="hidden"
-                      height="100%"
-                    >
-                      <Flex
-                        width="100%"
-                        height="100%"
-                        backgroundColor="gray"
-                        opacity={0.1}
-                        position="absolute"
-                      />
-                      <Flex
-                        direction="column"
-                        alignItems="center"
-                        padding="8px"
-                        width="100%"
-                      >
-                        <Text>
-                          {format(new Date(data?.dt_txt), 'iii, d MMM')}
-                        </Text>
-                        <Text>{format(new Date(data?.dt_txt), 'HH:mm')}</Text>
-                        <Image
-                          src={`https://openweathermap.org/img/wn/${data?.weather[0]?.icon}@4x.png`}
-                          alt="weather-icon"
-                          width="60px"
-                          height="60px"
-                        />
-                        <Text textAlign="center" marginTop="auto">
-                          {data?.weather[0]?.description}
-                        </Text>
-                      </Flex>
-                    </Flex>
-                  </GridItem>
-                )
-              })}
-            </Grid>
-          </Flex>
+        {forecastQuery?.data ? (
+          <Forecast list={forecastQuery?.data?.list} />
         ) : null}
       </Flex>
     </Container>

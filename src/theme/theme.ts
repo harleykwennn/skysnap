@@ -13,6 +13,10 @@ const theme = extendTheme({
         default: "white",
         _dark: "#212121",
       },
+      "background": {
+        default: "white",
+        _dark: "#212121",
+      },
     },
   },
 });

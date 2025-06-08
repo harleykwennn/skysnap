@@ -7,6 +7,7 @@ export default function App() {
 
   useEffect(() => {
     setColorMode('dark')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return <Router />

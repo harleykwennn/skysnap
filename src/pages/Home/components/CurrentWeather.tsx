@@ -60,7 +60,9 @@ function CurrentWeather(props: CurrentWeatherProps) {
           width="100%"
         >
           <Flex direction="column" gap="4px">
-            <Text fontSize="10px">{format(new Date(), 'dd MMMM yyyy')}</Text>
+            <Text fontSize="10px">
+              {format(new Date(), 'iii dd MMMM yyyy, HH:mm')}
+            </Text>
             <Text fontSize="14px" fontWeight="semibold">
               {data?.weather[0]?.main}
             </Text>
