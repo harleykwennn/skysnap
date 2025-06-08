@@ -112,7 +112,7 @@ export default function Home() {
                   placeholder="Search location"
                   defaultValue={location}
                   onChange={(e) => debouncedLocation(e.target.value)}
-                  fontSize="sm"
+                  fontSize={{ base: 'md', md: 'sm' }}
                 />
               </InputGroup>
               {location && locationsQuery?.isFetching ? (
