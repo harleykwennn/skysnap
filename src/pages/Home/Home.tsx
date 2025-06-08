@@ -169,7 +169,7 @@ export default function Home() {
         {/* Forecast */}
         {forecastQuery?.isFetching ? (
           <Spinner margin="auto" />
-        ) : (
+        ) : forecastQuery?.data ? (
           <Flex
             direction="column"
             gap=".5rem"
@@ -205,7 +205,7 @@ export default function Home() {
               })}
             </Grid>
           </Flex>
-        )}
+        ) : null}
       </Flex>
     </Container>
   )
