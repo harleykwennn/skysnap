@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import locationiqService from '@/services/locationiq/locationiq.service'
 import openweatherService from '@/services/openweather/openweather.service'
+import CurrentWeather from '@/pages/Home/components/CurrentWeather'
 import type { ForwardGeocodingResultProps } from '@/services/locationiq/locationiq.service-d'
 import { useDebouncedCallback } from 'use-debounce'
 import { useQuery } from '@tanstack/react-query'
@@ -24,6 +25,7 @@ import {
   GridItem,
   Grid,
 } from '@chakra-ui/react'
+import { format } from 'date-fns'
 
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -71,7 +73,7 @@ export default function Home() {
 
   return (
     <Container maxWidth="container.sm" paddingY="1rem">
-      <Flex direction="column" gap="1rem">
+      <Flex direction="column" gap="20px">
         <Text>Skysnap</Text>
 
         {/* Location */}
@@ -141,64 +143,63 @@ export default function Home() {
         {currentWeatherQuery?.isFetching ? (
           <Spinner margin="auto" />
         ) : currentWeatherQuery?.data ? (
-          <Flex
-            direction="column"
-            gap=".5rem"
-            backgroundColor="gray.50"
-            padding="1rem"
-            borderRadius="1rem"
-          >
-            <Text>Current Weather</Text>
-            <Flex
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Image
-                src={`https://openweathermap.org/img/wn/${currentWeatherQuery?.data?.weather[0]?.icon}@4x.png`}
-                alt="weather-icon"
-                width="120px"
-                height="120px"
-              />
-              <Text>{currentWeatherQuery?.data?.weather[0]?.main}</Text>
-              <Text>{currentWeatherQuery?.data?.weather[0]?.description}</Text>
-            </Flex>
-          </Flex>
+          <CurrentWeather data={currentWeatherQuery?.data} />
         ) : null}
 
         {/* Forecast */}
         {forecastQuery?.isFetching ? (
           <Spinner margin="auto" />
         ) : forecastQuery?.data ? (
-          <Flex
-            direction="column"
-            gap=".5rem"
-            backgroundColor="gray.50"
-            padding="1rem"
-            borderRadius="1rem"
-          >
-            <Text>Forecast</Text>
-            <Grid gridTemplateColumns="repeat(3, 1fr)" gridGap=".5rem">
+          <Flex position="relative" borderRadius="24px" overflow="hidden">
+            <Flex
+              width="100%"
+              height="100%"
+              backgroundColor="gray"
+              opacity={0.16}
+              position="absolute"
+            />
+            <Grid
+              gridTemplateColumns="repeat(3, 1fr)"
+              gridGap="1rem"
+              margin="1rem"
+              width="100%"
+            >
               {forecastQuery?.data?.list?.map((data, index) => {
                 return (
                   <GridItem key={index}>
                     <Flex
-                      direction="column"
-                      justifyContent="center"
-                      alignItems="center"
-                      borderWidth="1px"
-                      borderColor="gray.200"
-                      borderRadius="1rem"
-                      padding=".5rem"
+                      position="relative"
+                      borderRadius="12px"
+                      overflow="hidden"
+                      height="100%"
                     >
-                      <Text>{data?.dt_txt}</Text>
-                      <Image
-                        src={`https://openweathermap.org/img/wn/${data?.weather[0]?.icon}@4x.png`}
-                        alt="weather-icon"
-                        width="60px"
-                        height="60px"
+                      <Flex
+                        width="100%"
+                        height="100%"
+                        backgroundColor="gray"
+                        opacity={0.1}
+                        position="absolute"
                       />
-                      <Text>{data?.weather[0]?.description}</Text>
+                      <Flex
+                        direction="column"
+                        alignItems="center"
+                        padding="8px"
+                        width="100%"
+                      >
+                        <Text>
+                          {format(new Date(data?.dt_txt), 'iii, d MMM')}
+                        </Text>
+                        <Text>{format(new Date(data?.dt_txt), 'HH:mm')}</Text>
+                        <Image
+                          src={`https://openweathermap.org/img/wn/${data?.weather[0]?.icon}@4x.png`}
+                          alt="weather-icon"
+                          width="60px"
+                          height="60px"
+                        />
+                        <Text textAlign="center" marginTop="auto">
+                          {data?.weather[0]?.description}
+                        </Text>
+                      </Flex>
                     </Flex>
                   </GridItem>
                 )

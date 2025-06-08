@@ -4,13 +4,14 @@ import '@/assets/fonts/fonts.css'
 import '@/index.css'
 import App from '@/App.tsx'
 import RouteProvider from '@/router/Provider.tsx'
+import theme from '@/theme/theme'
 import { ChakraProvider } from '@chakra-ui/react'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from '@/lib/tanstack-query/query-client'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <RouteProvider>
           <App />
