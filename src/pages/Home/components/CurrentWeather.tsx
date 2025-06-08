@@ -38,7 +38,7 @@ function CurrentWeather(props: CurrentWeatherProps) {
   }
 
   const temperatureInCelcius = Math.floor(data?.main?.temp - 273.15) + '°C' // unit default in kelvin
-  const wind = Math.floor(data?.wind?.speed) + 'm/s'
+  const wind = Math.ceil(data?.wind?.speed) + 'm/s'
   const humidity = Math.floor(data?.main?.humidity) + '%'
   const rainChance = getRainChancePercentage(data) + '%'
 
