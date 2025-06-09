@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import type { CurrentWeatherResultProps } from '@/services/openweather/openweather.service-d'
 import { format } from 'date-fns'
+import { IC_HUMIDITY, IC_RAIN, IC_WIND } from '@/assets/icons'
 import { Flex, Image, Text } from '@chakra-ui/react'
 
 interface CurrentWeatherProps {
@@ -102,6 +103,12 @@ function CurrentWeather(props: CurrentWeatherProps) {
             alignItems="center"
             justifyContent="center"
           >
+            <Image
+              src={IC_WIND}
+              width="16px"
+              height="16px"
+              marginBottom="4px"
+            />
             <Text fontSize="14px" fontWeight="semibold">
               {wind}
             </Text>
@@ -113,6 +120,12 @@ function CurrentWeather(props: CurrentWeatherProps) {
             alignItems="center"
             justifyContent="center"
           >
+            <Image
+              src={IC_HUMIDITY}
+              width="16px"
+              height="16px"
+              marginBottom="4px"
+            />
             <Text fontSize="14px" fontWeight="semibold">
               {humidity}
             </Text>
@@ -124,6 +137,12 @@ function CurrentWeather(props: CurrentWeatherProps) {
             alignItems="center"
             justifyContent="center"
           >
+            <Image
+              src={IC_RAIN}
+              width="16px"
+              height="16px"
+              marginBottom="4px"
+            />
             <Text fontSize="14px" fontWeight="semibold">
               {rainChance}
             </Text>
