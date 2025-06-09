@@ -3,7 +3,7 @@ import locationiqService from '@/services/locationiq/locationiq.service'
 import openweatherService from '@/services/openweather/openweather.service'
 import CurrentWeather from '@/pages/Home/components/CurrentWeather'
 import Forecast from './components/Forecast'
-import type { ForwardGeocodingResultProps } from '@/services/locationiq/locationiq.service-d'
+import type { AutocompleteResultProps } from '@/services/locationiq/locationiq.service-d'
 import { useSearchParams } from 'react-router-dom'
 import { useDebouncedCallback } from 'use-debounce'
 import { useQuery } from '@tanstack/react-query'
@@ -35,7 +35,7 @@ export default function Home() {
 
   const [location, setLocation] = useState<string>('')
   const [selectedLocation, setSelectedLocation] =
-    useState<ForwardGeocodingResultProps | null>(null)
+    useState<AutocompleteResultProps | null>(null)
 
   const debouncedLocation = useDebouncedCallback((value) => {
     setLocation(value)
@@ -51,7 +51,7 @@ export default function Home() {
   const locationsQuery = useQuery({
     queryKey: ['locations', location],
     queryFn: () =>
-      locationiqService.forwardGeocoding({ q: location, format: 'json' }),
+      locationiqService.autocomplete({ q: location, format: 'json' }),
     enabled: location !== '',
   })
 
@@ -75,7 +75,7 @@ export default function Home() {
     enabled: lat !== null && lon !== null,
   })
 
-  const handleLocationSelect = (data: ForwardGeocodingResultProps) => {
+  const handleLocationSelect = (data: AutocompleteResultProps) => {
     setSelectedLocation(data)
     setSearchParams((prevParams) => {
       const newParams = new URLSearchParams(prevParams.toString())
@@ -89,22 +89,7 @@ export default function Home() {
   useEffect(() => {
     if (reverseQuery.isSuccess && reverseQuery.data) {
       const data = reverseQuery?.data
-      setSelectedLocation(() => {
-        return {
-          boundingbox: data?.boundingbox,
-          class: '',
-          display_name: data?.display_name,
-          icon: '',
-          importance: 0,
-          lat: data?.lat,
-          licence: data?.licence,
-          lon: data?.lon,
-          osm_id: data?.osm_id,
-          osm_type: data?.osm_type,
-          place_id: data?.place_id,
-          type: '',
-        }
-      })
+      setSelectedLocation(() => ({ ...data }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reverseQuery.isSuccess])

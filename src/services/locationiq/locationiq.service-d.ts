@@ -2,39 +2,12 @@
  * Forward Geocoding
  */
 
-export interface ForwardGeocodingParamsProps {
+export interface AutocompleteParamsProps {
   q?: string
   format: 'json'
 }
 
-export interface ForwardGeocodingResultProps {
-  place_id: string
-  licence: string
-  osm_type: string
-  osm_id: string
-  boundingbox: string[]
-  lat: string
-  lon: string
-  display_name: string
-  class: string
-  type: string
-  importance: number
-  icon: string
-}
-
-export type ForwardGeocodingProps = ForwardGeocodingResultProps[]
-
-/**
- * Reverse Geocoding
- */
-
-export interface ReverseGeocodingParamsProps {
-  lat: string | null
-  lon: string | null
-  format: 'json'
-}
-
-export interface ReverseGeocodingProps {
+export interface AutocompleteResultProps {
   place_id: string
   licence: string
   osm_type: string
@@ -53,3 +26,17 @@ export interface ReverseGeocodingProps {
   }
   boundingbox: [string, string, string, string]
 }
+
+export type AutocompleteProps = AutocompleteResultProps[]
+
+/**
+ * Reverse Geocoding
+ */
+
+export interface ReverseGeocodingParamsProps {
+  lat: string | null
+  lon: string | null
+  format: 'json'
+}
+
+export type ReverseGeocodingProps = AutocompleteResultProps
