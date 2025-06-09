@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import locationiqService from '@/services/locationiq/locationiq.service'
 import openweatherService from '@/services/openweather/openweather.service'
 import CurrentWeather from '@/pages/Home/components/CurrentWeather'
 import Forecast from './components/Forecast'
 import type { ForwardGeocodingResultProps } from '@/services/locationiq/locationiq.service-d'
+import { useSearchParams } from 'react-router-dom'
 import { useDebouncedCallback } from 'use-debounce'
 import { useQuery } from '@tanstack/react-query'
 import { MapPinIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
@@ -27,6 +28,11 @@ import {
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const lat = searchParams.get('lat')
+  const lon = searchParams.get('lon')
+
   const [location, setLocation] = useState<string>('')
   const [selectedLocation, setSelectedLocation] =
     useState<ForwardGeocodingResultProps | null>(null)
@@ -34,6 +40,13 @@ export default function Home() {
   const debouncedLocation = useDebouncedCallback((value) => {
     setLocation(value)
   }, 1000)
+
+  const reverseQuery = useQuery({
+    queryKey: ['reverse'],
+    queryFn: () =>
+      locationiqService.reverseGeocoding({ lat, lon, format: 'json' }),
+    enabled: lat !== null && lon !== null,
+  })
 
   const locationsQuery = useQuery({
     queryKey: ['locations', location],
@@ -43,30 +56,58 @@ export default function Home() {
   })
 
   const currentWeatherQuery = useQuery({
-    queryKey: ['weather', selectedLocation],
+    queryKey: ['weather', lat, lon],
     queryFn: () =>
       openweatherService.currentWeather({
-        lat: Number(selectedLocation?.lat),
-        lon: Number(selectedLocation?.lon),
+        lat: Number(lat),
+        lon: Number(lon),
       }),
-    enabled: selectedLocation !== null,
+    enabled: lat !== null && lon !== null,
   })
 
   const forecastQuery = useQuery({
-    queryKey: ['forecast', selectedLocation],
+    queryKey: ['forecast', lat, lon],
     queryFn: () =>
       openweatherService.forecast({
-        lat: Number(selectedLocation?.lat),
-        lon: Number(selectedLocation?.lon),
+        lat: Number(lat),
+        lon: Number(lon),
       }),
-    enabled: selectedLocation !== null,
+    enabled: lat !== null && lon !== null,
   })
 
   const handleLocationSelect = (data: ForwardGeocodingResultProps) => {
     setSelectedLocation(data)
-    setLocation('')
+    setSearchParams((prevParams) => {
+      const newParams = new URLSearchParams(prevParams.toString())
+      newParams.set('lat', data.lat)
+      newParams.set('lon', data.lon)
+      return newParams
+    })
     onClose()
   }
+
+  useEffect(() => {
+    if (reverseQuery.isSuccess && reverseQuery.data) {
+      const data = reverseQuery?.data
+      setSelectedLocation(() => {
+        return {
+          boundingbox: data?.boundingbox,
+          class: '',
+          display_name: data?.display_name,
+          icon: '',
+          importance: 0,
+          lat: data?.lat,
+          licence: data?.licence,
+          lon: data?.lon,
+          osm_id: data?.osm_id,
+          osm_type: data?.osm_type,
+          place_id: data?.place_id,
+          type: '',
+        }
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reverseQuery.isSuccess])
 
   return (
     <Container maxWidth="container.sm" paddingY="1rem">
@@ -89,7 +130,13 @@ export default function Home() {
                 readOnly
                 variant="filled"
                 rounded="full"
-                value={selectedLocation?.display_name ?? 'Select location'}
+                value={
+                  selectedLocation?.display_name
+                    ? selectedLocation?.display_name
+                    : reverseQuery?.isFetching
+                    ? 'Reverse location...'
+                    : 'Search location'
+                }
                 fontSize="sm"
               />
             </InputGroup>
@@ -113,7 +160,7 @@ export default function Home() {
                 </InputLeftElement>
                 <Input
                   type="search"
-                  placeholder="Search location"
+                  placeholder={'Search location'}
                   defaultValue={location}
                   onChange={(e) => debouncedLocation(e.target.value)}
                   fontSize={{ base: 'md', md: 'sm' }}
