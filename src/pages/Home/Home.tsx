@@ -106,6 +106,8 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geolocation])
 
+  console.log('render')
+
   return (
     <Container maxWidth="container.sm" paddingY="1rem">
       <Flex direction="column" gap="20px">

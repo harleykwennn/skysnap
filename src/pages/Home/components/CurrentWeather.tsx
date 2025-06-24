@@ -104,6 +104,7 @@ function CurrentWeather(props: CurrentWeatherProps) {
             justifyContent="center"
           >
             <Image
+              alt='ic-wind'
               src={IC_WIND}
               width="16px"
               height="16px"
@@ -121,6 +122,7 @@ function CurrentWeather(props: CurrentWeatherProps) {
             justifyContent="center"
           >
             <Image
+              alt='ic-humidity'
               src={IC_HUMIDITY}
               width="16px"
               height="16px"
@@ -138,6 +140,7 @@ function CurrentWeather(props: CurrentWeatherProps) {
             justifyContent="center"
           >
             <Image
+              alt='ic-rain'
               src={IC_RAIN}
               width="16px"
               height="16px"
