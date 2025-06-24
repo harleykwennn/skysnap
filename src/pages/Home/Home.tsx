@@ -137,6 +137,7 @@ export default function Home() {
                     : 'Search location'
                 }
                 fontSize="sm"
+                aria-label="Location" 
               />
             </InputGroup>
           </PopoverTrigger>
@@ -163,6 +164,7 @@ export default function Home() {
                   defaultValue={location}
                   onChange={(e) => debouncedLocation(e.target.value)}
                   fontSize={{ base: 'md', md: 'sm' }}
+                  aria-label="Search location" 
                 />
               </InputGroup>
               {location && locationsQuery?.isFetching ? (
