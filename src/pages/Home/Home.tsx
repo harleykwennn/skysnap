@@ -121,25 +121,27 @@ export default function Home() {
           isLazy
         >
           <PopoverTrigger>
-            <InputGroup>
-              <InputLeftElement>
-                <Icon as={MapPinIcon} fontSize="lg" />
-              </InputLeftElement>
-              <Input
-                readOnly
-                variant="filled"
-                rounded="full"
-                value={
-                  selectedLocation?.display_name
-                    ? selectedLocation?.display_name
-                    : reverseQuery?.isFetching
-                    ? 'Reverse location...'
-                    : 'Search location'
-                }
-                fontSize="sm"
-                aria-label="Location" 
-              />
-            </InputGroup>
+            <Box>
+              <InputGroup>
+                <InputLeftElement>
+                  <Icon as={MapPinIcon} fontSize="lg" />
+                </InputLeftElement>
+                <Input
+                  readOnly
+                  variant="filled"
+                  rounded="full"
+                  value={
+                    selectedLocation?.display_name
+                      ? selectedLocation?.display_name
+                      : reverseQuery?.isFetching
+                      ? 'Reverse location...'
+                      : 'Search location'
+                  }
+                  fontSize="sm"
+                  aria-label="Location" 
+                />
+              </InputGroup>
+            </Box>
           </PopoverTrigger>
 
           <PopoverContent
