@@ -7,6 +7,7 @@ import type { AutocompleteResultProps } from '@/services/locationiq/locationiq.s
 import { useSearchParams } from 'react-router-dom'
 import { useDebouncedCallback } from 'use-debounce'
 import { useQuery } from '@tanstack/react-query'
+import { useGeolocation } from '@/hooks/use-geolocation'
 import { MapPinIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 import {
   Popover,
@@ -27,6 +28,7 @@ import {
 
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { location: geolocation } = useGeolocation()
 
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -42,7 +44,7 @@ export default function Home() {
   }, 1000)
 
   const reverseQuery = useQuery({
-    queryKey: ['reverse'],
+    queryKey: ['reverse', lat, lon],
     queryFn: () =>
       locationiqService.reverseGeocoding({ lat, lon, format: 'json' }),
     enabled: lat !== null && lon !== null,
@@ -75,14 +77,18 @@ export default function Home() {
     enabled: lat !== null && lon !== null,
   })
 
-  const handleLocationSelect = (data: AutocompleteResultProps) => {
-    setSelectedLocation(data)
+  function handleChangeLonLatParams(lat: string, lon: string) {
     setSearchParams((prevParams) => {
       const newParams = new URLSearchParams(prevParams.toString())
-      newParams.set('lat', data.lat)
-      newParams.set('lon', data.lon)
+      newParams.set('lat', lat)
+      newParams.set('lon', lon)
       return newParams
     })
+  }
+
+  function handleLocationSelect(data: AutocompleteResultProps) {
+    setSelectedLocation(data)
+    handleChangeLonLatParams(data.lat, data.lon)
     onClose()
   }
 
@@ -93,6 +99,12 @@ export default function Home() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reverseQuery.isSuccess])
+
+  useEffect(() => {
+    if ((lat && lon) || !geolocation) return
+    handleChangeLonLatParams(geolocation.latitude.toString(), geolocation.longitude.toString())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [geolocation])
 
   return (
     <Container maxWidth="container.sm" paddingY="1rem">
